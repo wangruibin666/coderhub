@@ -2,14 +2,16 @@ const Koa = require('koa');
 
 const bodyParser = require('koa-bodyparser'); //请求json参数解析
 
-const userRouter = require('../router/user.router');
+const useRoutes = require('../router');
 const errorHandler = require('./error-handle');
 
 const app = new Koa();
 
+app.useRoutes = useRoutes;
+
 app.use(bodyParser());
-app.use(userRouter.routes());
-app.use(userRouter.allowedMethods());
+
+app.useRoutes();
 
 app.on('error', errorHandler);
 

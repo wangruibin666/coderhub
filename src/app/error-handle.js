@@ -24,7 +24,10 @@ const errorHandler = (error, ctx) => {
       status = 401;
       message = "无效token！";
       break;
-
+    case errorTypes.UNPERMISSON:
+      status = 401;
+      message = "无权限！";
+      break;
     default:
       status = 404;
       message = "NOT FOUND";

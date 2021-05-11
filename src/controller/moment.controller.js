@@ -7,7 +7,6 @@ class MomentController {
     const content = ctx.request.body.content;
     //2.将数据插入数据库
     const result = await momentService.create(userId, content);
-    console.log(result)
 
     ctx.body = result;
   };
@@ -30,6 +29,22 @@ class MomentController {
     const result = await momentService.getMomentList(offset, size);
     ctx.body = result;
 
+  };
+
+  async update(ctx, next) {
+    const {momentId} = ctx.params;
+    const {content} = ctx.request.body;
+    const result = await momentService.update(content, momentId);
+    ctx.body = result;
+  };
+
+  async remove(ctx, next) {
+    //1获取momentId
+    const {momentId} = ctx.params;
+
+    //2删除内容
+    const result = await momentService.remove(momentId);
+    ctx.body = result;
   }
 }
 

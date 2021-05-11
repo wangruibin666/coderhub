@@ -1,5 +1,6 @@
 const errorTypes = require('../constants/error-types');
 const service = require('../service/user.service');
+const authService = require('../service/auth.service');
 const md5password = require('../utils/password-handle');
 const jwt = require('jsonwebtoken');
 const {PUBLIC_KEY,PRIVATE_KEY} = require('../app/config')
@@ -56,7 +57,24 @@ const verifyAuth = async (ctx, next) => {
 
 };
 
+const verifyPermisson = async (ctx, next) => {
+  //1.获取参数
+  const {momentId} = ctx.params;
+  const {id} = ctx.user;
+
+  //2查询是否具备权限
+  const isPerission = await authService.checkMoment(momentId, id);
+  if(!isPerission){
+    const error = new Error(errorTypes.UNPERMISSON);
+    return ctx.app.emit('error', error, ctx);
+  }
+
+
+  await next();
+}
+
 module.exports = {
   verifyLogin,
-  verifyAuth
+  verifyAuth,
+  verifyPermisson
 };

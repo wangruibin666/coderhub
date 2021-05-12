@@ -57,20 +57,30 @@ const verifyAuth = async (ctx, next) => {
 
 };
 
-const verifyPermisson = async (ctx, next) => {
-  //1.获取参数
-  const {momentId} = ctx.params;
-  const {id} = ctx.user;
+const verifyPermisson = (tableName) => {
+  return async (ctx, next) => {
+    //1.获取参数
+    // const {commentId} = ctx.params;
+    // { commentId: '1' }
+    const [key] = Object.keys(ctx.params)
+    const keyValue = ctx.params[key];
+    console.log(ctx.params,'++++')
+    const {id} = ctx.user;
 
-  //2查询是否具备权限
-  const isPerission = await authService.checkMoment(momentId, id);
-  if(!isPerission){
-    const error = new Error(errorTypes.UNPERMISSON);
-    return ctx.app.emit('error', error, ctx);
+    //2查询是否具备权限
+    try {
+      const isPerission = await authService.checkResource(tableName , keyValue, id);
+      if(!isPerission){
+        const error = new Error(errorTypes.UNPERMISSON);
+        return ctx.app.emit('error', error, ctx);
+      }
+      await next();
+    } catch (e) {
+      const error = new Error(errorTypes.UNPERMISSON);
+      return ctx.app.emit('error', error, ctx);
+    }
+
   }
-
-
-  await next();
 }
 
 module.exports = {

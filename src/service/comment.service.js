@@ -20,11 +20,17 @@ class CommentService {
     const statement = `UPDATE comment SET content = ? WHERE id = ? ;`;
     const [result] = await connection.execute(statement, [content, commentId]);
     return  result;
-  }l
+  }
 
   async remove(commentId) {
     const statement = `DELETE FROM comment WHERE id = ?;`;
     const [result] = await connection.execute(statement, [commentId]);
+    return result;
+  };
+
+  async getCommentsByMomentId(momentId) {
+    const statement = `SELECT * FROM comment WHERE moment_id = ?;`;
+    const [result] = await connection.execute(statement, [momentId]);
     return result;
   }
 }
